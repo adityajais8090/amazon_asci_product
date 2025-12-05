@@ -3,6 +3,9 @@ import '../styles/home.css';
 import { getData, getAllData } from '../service/api'; 
 import ProductList from "./ProductList";  
 import ProductModal from "../components/ProductModal";
+import ProductDetailsDisplay from "../components/ProductDetailsDisplay";
+import EnhancedContentDisplay from "../components/EnhancedContentDisplay";
+import Loader from "../components/Loader";
 
 const Home = () => {
 
@@ -13,7 +16,7 @@ const Home = () => {
   const [allProducts, setAllProducts] = useState([]);
   const [activeTab, setActiveTab] = useState("asin"); 
 
-  // 🔥 modal state
+  
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   // Fetch all product list
@@ -55,31 +58,71 @@ const Home = () => {
   return (
     <div className="home-container">
 
-      <h2>🛒 Amazon Product Extractor</h2>
+      <h2> Amazon Product Extractor</h2>
 
-      {/* Tabs */}
+      
       <div className="tab-buttons">
         <button className={activeTab==="asin"?"active":""} onClick={()=>setActiveTab("asin")}>ASIN Extractor</button>
         <button className={activeTab==="list"?"active":""} onClick={()=>setActiveTab("list")}>Product List</button>
       </div>
 
-      {/* TAB 1 — ASIN INPUT */}
+     
       {activeTab === "asin" && (
         <>
           <div className="input-block">
-            <input type="text" placeholder="Enter ASIN..." value={code} onChange={(e)=>setCode(e.target.value)} />
-            <button onClick={handleFetch} disabled={loading}>{loading ? "Fetching..." : "Get Details"}</button>
+            <input 
+              type="text" 
+              placeholder="Enter ASIN..." 
+              value={code} 
+              onChange={(e)=>setCode(e.target.value)}
+              disabled={loading}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter' && !loading) {
+                  handleFetch();
+                }
+              }}
+            />
+            <button onClick={handleFetch} disabled={loading} className={loading ? 'loading' : ''}>
+              {loading ? (
+                <>
+                  <span className="button-spinner"></span>
+                  Fetching...
+                </>
+              ) : (
+                'Get Details'
+              )}
+            </button>
           </div>
 
           <div className="result-section">
-            <div className="box">
-              <h3>📦 Product Details</h3>
-              {product ? <pre>{JSON.stringify(product,null,2)}</pre> : <p>No data fetched</p>}
+            <div className="box product-details-box">
+              <h3>Product Details</h3>
+              {loading ? (
+                <Loader message="Fetching product details..." />
+              ) : product ? (
+                <ProductDetailsDisplay product={product} />
+              ) : (
+                <div className="empty-state">
+                  <div className="empty-state-icon">📭</div>
+                  <div className="empty-state-text">No data fetched</div>
+                  <div className="empty-state-subtext">Enter an ASIN code and click "Get Details"</div>
+                </div>
+              )}
             </div>
 
-            <div className="box">
-              <h3>🚀 Enhanced Content</h3>
-              {enhanced ? <pre>{JSON.stringify(enhanced,null,2)}</pre> : <p>No enhanced content yet</p>}
+            <div className="box enhanced-content-box">
+              <h3>Enhanced Content</h3>
+              {loading ? (
+                <Loader message="Generating enhanced content..." />
+              ) : enhanced ? (
+                <EnhancedContentDisplay enhancedData={enhanced} />
+              ) : (
+                <div className="empty-state">
+                  <div className="empty-state-icon">✨</div>
+                  <div className="empty-state-text">No enhanced content yet</div>
+                  <div className="empty-state-subtext">AI-enhanced data will appear here after fetching</div>
+                </div>
+              )}
             </div>
           </div>
         </>
@@ -87,21 +130,16 @@ const Home = () => {
 
       {/* TAB 2 — PRODUCT GRID LIST WITH MODAL */}
       {activeTab === "list" && (
-        <div>
-          <h3 className="text-xl font-semibold mb-4">📂 Stored Products</h3>
-
-          {allProducts.length > 0 ? (
-            <ProductList 
-              products={allProducts} 
-              onProductClick={(p)=> setSelectedProduct(p)}   // <<< handle click here
-            />
-          ) : (
-            <p>No products stored</p>
-          )}
+        <div className="product-list-tab">
+          <h3>Stored Products ({allProducts.length})</h3>
+          <ProductList 
+            products={allProducts} 
+            onProductClick={(p)=> setSelectedProduct(p)}
+          />
         </div>
-        )}
+      )}
 
-        {/* 🔥 Place Modal OUTSIDE tab section so it overlays properly */}
+       
         {selectedProduct && (
         <ProductModal 
           product={selectedProduct} 

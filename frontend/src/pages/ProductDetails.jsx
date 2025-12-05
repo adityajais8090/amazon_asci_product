@@ -17,10 +17,10 @@ const ProductDetails = ({ products }) => {
       <h1 className="text-2xl font-bold">{ai_title}</h1>
       <p className="text-gray-600 mt-1">{product.brand}</p>
 
-      {/* Tabs */}
+      
       <div className="mt-5 space-y-6">
         
-        {/* Product Information */}
+       
         <section className="p-4 border rounded-lg shadow-sm">
           <h2 className="font-semibold text-lg mb-2">Product Information</h2>
           {Object.keys(ai_product_info).length ? (
@@ -32,7 +32,7 @@ const ProductDetails = ({ products }) => {
           ) : "No Data"}
         </section>
 
-        {/* Feature Bullets */}
+        
         <section className="p-4 border rounded-lg shadow-sm">
           <h2 className="font-semibold text-lg mb-2">Features</h2>
           <ul className="list-disc ml-6 space-y-1">
@@ -40,7 +40,7 @@ const ProductDetails = ({ products }) => {
           </ul>
         </section>
 
-        {/* Details */}
+        
         <section className="p-4 border rounded-lg shadow-sm">
           <h2 className="font-semibold text-lg mb-2">Detail Bullets</h2>
           {Object.entries(detail_bullets).map(([k,v],i)=>(
@@ -48,7 +48,7 @@ const ProductDetails = ({ products }) => {
           ))}
         </section>
 
-        {/* Description */}
+        
         <section className="p-4 border rounded-lg shadow-sm">
           <h2 className="font-semibold text-lg mb-2">Description</h2>
           <div dangerouslySetInnerHTML={{ __html: ai_description }} className="text-sm leading-6" />
