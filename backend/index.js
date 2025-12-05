@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { extractpro } from './extractpro.js';
+import { scrapperextract } from './scrapperapiextract.js';
 import { geminipro } from './geminipro.js';
 import { saveProduct } from "./database.js";
 
@@ -23,40 +24,50 @@ app.post("/asin", async (req, res) => {
     }
 
     try {
-        const jsonData = await extractpro(code);     
-        const data = JSON.parse(jsonData);           
+
+        //initial ftech data using web scraping
+        //const jsonData = await extractpro(code);     
+        //const data = JSON.parse(jsonData);
+        
+        //use scrapperapi tofetch data
+        const data = await scrapperextract(code);           
         const enhancedata = await geminipro(data);
-        console.log("Basic Fetched Data", data);
-        console.log("Here is the generated data :", enhancedata);
+    
 
-        //insert into sql database
-        const product = {
-        // Basic Fetched Data
-                asin: data.asin, // 'B0FZL6PWDK'
-                url: data.url,   // 'https://www.amazon.in/dp/B0FZL6PWDK'
-                title: data.title, // 'Decorative Vase for Living Room (Beige, 15)'
-                price: data.price, // '799.'
-                rating: data.rating, // '5 out of 5'
-                reviewsCount: data.reviewsCount, // '(1)'
-                description: data.description, // Original description
-                mainImage: data.mainImage, // Original main image
-                allImages: data.allImages, // Array of all images
-                bullets: data.bullets,     // Array of original bullet points
-                technicalDetails: data.technicalDetails, // Original technical details
-                detailBullets: data.detailBullets || {},
+       const product = {
+                // Basic
+                asin: data.asin,
+                url: data.url,
+                title: data.title,
+                brand: data.brand || null,
+                category: data.category || null,
 
-                // AI-Enhanced Data
-                ai_title: enhancedata.title, // AI-enhanced title
-                ai_description: enhancedata.description, // AI-enhanced description
-                ai_bullets: enhancedata.bullets,         // AI-enhanced bullet points
-                ai_technicalDetails: enhancedata.technicalDetails, // AI-enhanced technical details
-                ai_detailBullets: enhancedata.detailBullets || {}  // AI-enhanced detail bullets
-                };
+                price: data.price || {}, 
+                images: {
+                    main: data.main || null,
+                    all: data.all || []
+                },
 
-                await saveProduct(product);
+                rating: data.rating || {},                // JSON
+                product_information: data.product_information || {},  // JSON
+                technical_details: data.technical_details || {},       // JSON
+                detail_bullets: data.detail_bullets || {},             // JSON
+                feature_bullets: data.feature_bullets || [],                  // JSON ARRAY
+                description: data.description || null,
+
+                // ----------- AI Enhanced Data (MUST MATCH SCHEMA NAMES) -----------
+                ai_title: enhancedata.ai_title || null,
+                ai_product_information: enhancedata.ai_product_information || null,
+                ai_detail_bullets: enhancedata.ai_detail_bullets || null,
+                ai_feature_bullets: enhancedata.ai_feature_bullets || null,
+                ai_description: enhancedata.ai_description || null
+            };
+
+
+               await saveProduct(product);
        
 
-        return res.status(200).json({ success: true, product: data, enhancedata });
+        return res.status(200).json({ success: true, product: data , enhancedata});
 
     } catch (error) {
         return res.status(500).json({ success: false, error: error.message });

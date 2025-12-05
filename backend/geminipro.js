@@ -29,18 +29,11 @@ Requirements:
 
 Output JSON format:
 {
-  "asin": "...",
-  "url": "...",
-  "title": "...",
-  "price": "...",
-  "rating": "...",
-  "reviewsCount": "...",
-  "description": "...",
-  "mainImage": "...",
-  "allImages": [...],
-  "bullets": [...],
-  "technicalDetails": { ... },
-  "detailBullets": { ... }
+  "ai_title": { ... },
+  "ai_product_information": { ... },
+  "ai_detail_bullets": { ... },
+  "ai_feature_bullets": { ... },
+  "ai_description": { ... }
 }
 
 Product Data:

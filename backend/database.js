@@ -14,49 +14,63 @@ export async function connectDB() {
 export async function saveProduct(product) {
   const db = await connectDB();
 
+   console.log("here is the save products", product);
+   
   const sql = `
     INSERT INTO products
-    (asin, url, title, ai_title, price, rating, reviews_count, description, ai_description,
-     main_image, all_images, bullets, ai_bullets, technical_details, ai_technical_details,
-     detail_bullets, ai_detail_bullets)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    (asin, url, title, brand, category, price, images,
+    rating, product_information, technical_details,
+    detail_bullets, feature_bullets, description, 
+    ai_title, ai_product_information, ai_detail_bullets,
+    ai_feature_bullets, ai_description)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE
+      asin = VALUES(asin),
+      url = VALUES(url),
       title = VALUES(title),
-      ai_title = VALUES(ai_title),
+      brand = VALUES(brand),
+      category = VALUES(category),
       price = VALUES(price),
+      images = VALUES(images),
       rating = VALUES(rating),
-      reviews_count = VALUES(reviews_count),
-      description = VALUES(description),
-      ai_description = VALUES(ai_description),
-      main_image = VALUES(main_image),
-      all_images = VALUES(all_images),
-      bullets = VALUES(bullets),
-      ai_bullets = VALUES(ai_bullets),
+      product_information = VALUES(product_information),
       technical_details = VALUES(technical_details),
-      ai_technical_details = VALUES(ai_technical_details),
       detail_bullets = VALUES(detail_bullets),
-      ai_detail_bullets = VALUES(ai_detail_bullets)
+      feature_bullets = VALUES(feature_bullets),
+      description = VALUES(description),
+      ai_title = VALUES(ai_title),
+      ai_product_information = VALUES(ai_product_information),
+      ai_detail_bullets = VALUES(ai_detail_bullets),
+      ai_feature_bullets = VALUES(ai_feature_bullets),
+      ai_description = VALUES(ai_description);
   `;
 
-  const values = [
-    product.asin,
-    product.url,
-    product.title,
-    product.ai_title,
-    product.price,
-    product.rating,
-    product.reviewsCount,
-    product.description,
-    product.ai_description,
-    product.mainImage,
-    JSON.stringify(product.allImages),
-    JSON.stringify(product.bullets),
-    JSON.stringify(product.ai_bullets),
-    JSON.stringify(product.technicalDetails),
-    JSON.stringify(product.ai_technicalDetails),
-    JSON.stringify(product.detailBullets),
-    JSON.stringify(product.ai_detailBullets)
-  ];
+    
+        const values = [
+        product.asin,
+        product.url,
+        product.title,
+        product.brand,
+        product.category,
+
+        JSON.stringify(product.price || {}),
+        JSON.stringify(product.images || {}),
+        JSON.stringify(product.rating || {}),
+
+        JSON.stringify(product.product_information || {}),
+        JSON.stringify(product.technical_details || {}),
+        JSON.stringify(product.detail_bullets || {}),
+        JSON.stringify(product.feature_bullets || []),
+
+        product.description || null,
+
+        product.ai_title || null,
+        JSON.stringify(product.ai_product_information || {}),
+        JSON.stringify(product.ai_detail_bullets || {}),
+        JSON.stringify(product.ai_feature_bullets || {}),
+        product.ai_description || null
+      ];
+
 
   await db.execute(sql, values);
   await db.end();

@@ -2,6 +2,7 @@ import {load} from "cheerio";
 import fetch from "node-fetch";
 
 
+
 const extractpro = async (ascicode) => {
     try {
         if (!ascicode) return JSON.stringify({ error: "ASIN required" });
@@ -75,7 +76,7 @@ const extractpro = async (ascicode) => {
             technicalDetails,
             detailBullets
         };
-        
+
         return JSON.stringify(productData, null, 2); // <-- return clean JSON
         
     } catch (err) {
