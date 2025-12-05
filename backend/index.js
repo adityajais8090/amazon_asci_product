@@ -3,7 +3,7 @@ import cors from 'cors';
 import { extractpro } from './extractpro.js';
 import { scrapperextract } from './scrapperapiextract.js';
 import { geminipro } from './geminipro.js';
-import { saveProduct } from "./database.js";
+import { saveProduct, getproduct } from "./database.js";
 
 
 const app = express();
@@ -73,6 +73,24 @@ app.post("/asin", async (req, res) => {
         return res.status(500).json({ success: false, error: error.message });
     }
 });
+
+app.get("/product", async (req, res) => {
+    try {
+        const response = await getproduct();   
+
+        return res.status(200).json({
+            success: true,
+            product: response
+        });
+
+    } catch (err) {
+        return res.status(500).json({
+            success: false,
+            error: err.message
+        });
+    }
+});
+
 
 
 app.listen(8000, () => {

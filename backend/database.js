@@ -12,7 +12,10 @@ export async function connectDB() {
 }
 
 export async function saveProduct(product) {
-  const db = await connectDB();
+
+  try{
+
+    const db = await connectDB();
 
    console.log("here is the save products", product);
    
@@ -74,4 +77,28 @@ export async function saveProduct(product) {
 
   await db.execute(sql, values);
   await db.end();
+  
+
+  }catch(err){
+    console.error("Error inserting products:", error);
+        return { error: true, message: err.message };
+  }
+  
+}
+
+
+export async function getproduct(){
+     try {
+        const db = await connectDB();
+
+        const sql = `SELECT * FROM products`;
+
+        const [rows] = await db.execute(sql); // fetch results
+
+        await db.end();
+        return rows; // return all products list
+    } catch (err) {
+        console.error("Error fetching all products:", err);
+        return { error: true, message: err.message };
+    }
 }
