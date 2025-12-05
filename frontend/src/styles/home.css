@@ -43,3 +43,20 @@
   white-space: pre-wrap;
   word-break: break-word;
 }
+
+.tab-buttons{
+  display:flex; gap:10px; margin-bottom:20px;
+}
+.tab-buttons button{
+  padding:8px 15px; cursor:pointer; border-radius:6px;
+  border:1px solid #333;
+}
+.tab-buttons .active{
+  background:#181818; color:#fff;
+}
+.product-table table{
+  width:100%; border-collapse:collapse; margin-top:15px;
+}
+.product-table th,td{
+  padding:10px; border:1px solid #ddd; text-align:left;
+}

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-//shift it to the env once update
-const API_URL = 'http://localhost:8000';
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const getData = async (data) => {
     try{
@@ -10,5 +10,15 @@ export const getData = async (data) => {
           return response.data;
     }catch(err){
         console.log("Error while uploading files",err);
+    }
+}
+
+export const getAllData = async() => {
+    try{
+         const response = await axios.get(`${API_URL}/product`);
+         console.log("Here is the response", response.data);
+          return response.data;
+    }catch(err){
+        console.log("Error while fetching all data",err);
     }
 }
