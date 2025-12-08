@@ -1,8 +1,10 @@
 .product-details-display {
   width: 100%;
-  background: var(--white);
-  border-radius: 8px;
-  padding: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;       /* allows scrolling */
+  max-height: 100vh;      /* prevents content clipping */
+  padding-bottom: 20px;
 }
 
 /* Header Section */
@@ -142,11 +144,11 @@
   transform: scale(1.05);
 }
 
-/* Info Section */
+/* Right Side Scroll Enable (if content is long) */
 .product-info-section {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+  overflow-y: auto;
+  max-height: calc(100vh - 120px); /* page responsive */
+  padding-right: 10px;
 }
 
 /* Price Section */

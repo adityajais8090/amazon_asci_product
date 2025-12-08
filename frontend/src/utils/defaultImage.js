@@ -11,6 +11,6 @@ export const getImageUrl = (image, fallback = DEFAULT_PRODUCT_IMAGE) => {
 // Helper function for image error handler
 export const handleImageError = (e, fallback = DEFAULT_PRODUCT_IMAGE) => {
   e.target.src = fallback;
-  e.target.onerror = null; // Prevent infinite loop
+  e.target.onerror = null; 
 };
 
